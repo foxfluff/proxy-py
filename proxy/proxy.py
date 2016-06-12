@@ -5,12 +5,12 @@ import argparse
 
 class Connection:
 
-    def __init__(self, ):
+    def __init__(self, incoming_socket, outgoing_addr, outgoing_port):
         #buffers
         self._machine_a_in = ''
         self._machine_a_out = ''
         self._machine_b_in = ''
-        self._machine_b_out = ''
+        self._machine_b_out = '' #?
 
     def connect_in(self):
         pass
@@ -46,6 +46,15 @@ while True:
         #listen for stuff
         #when something connects, spawn a thread and try to establish the outgoing connection
         #profit
+        parent_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #ipv4, tcp
+        parent_socket.bind((args['local_address'], args['local_port']))
+        parent_socket.listen() #might need to tweak backlog options later
+
+        child_socket, child_addr_info = parent_socket.accept()
+
+        child_thread = threading.Thread(target = Connection(child_socket, args['remote_address'], args['remote_port']))
+        child_thread.start()
+
     except KeyboardInterrupt:
         #clean up please
         break # <- this is not clean >:V
