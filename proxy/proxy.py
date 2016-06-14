@@ -82,6 +82,7 @@ args = arg_parser.parse_args()
 
 #game/connection loop
 
+threads = []
 while True:
     try:
         #listen for stuff
@@ -102,6 +103,8 @@ while True:
             )
 
         child_thread.start()
+
+        threads.append(child_thread)
 
     except KeyboardInterrupt:
         #clean up please
